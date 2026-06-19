@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "northshine",
+      "runtimeExecutable": "C:\\Users\\Shivam Mehra\\OneDrive\\Desktop\\Documents\\websites\\cleaning site\\serve-preview.cmd",
+      "runtimeArgs": [],
+      "port": 3000
+    }
+  ]
+}

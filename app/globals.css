@@ -1,0 +1,227 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --grad-brand: linear-gradient(135deg, #c8784a 0%, #a85a30 55%, #8c4a28 100%);
+  }
+
+  * {
+    @apply border-line;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-cream text-body font-sans antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-ink;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background-color: rgba(190, 110, 63, 0.22);
+    color: #5e341f;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme("colors.brand.600");
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .container-pad {
+    @apply container;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-700;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-300 ease-out will-change-transform;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-600 px-7 py-3.5 text-white shadow-glow hover:bg-brand-700 hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-ghost {
+    @apply btn border border-ink/15 bg-white/70 px-7 py-3.5 text-ink hover:border-ink/30 hover:bg-white;
+  }
+
+  .btn-light {
+    @apply btn bg-white px-7 py-3.5 text-ink shadow-soft hover:-translate-y-0.5 hover:shadow-lift;
+  }
+
+  .card {
+    @apply rounded-3xl border border-line bg-white shadow-soft;
+  }
+
+  .link-underline {
+    @apply relative after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: var(--grad-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Lighter warm gradient for headings over dark backgrounds (keeps contrast). */
+  .text-gradient-warm {
+    background: linear-gradient(135deg, #f3cda9 0%, #e0a47f 55%, #d08456 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .bg-grad-brand {
+    background: var(--grad-brand);
+  }
+
+  .mask-fade-r {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Respect users who prefer less motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ── Duster cursor + falling dust ───────────────────────────── */
+.duster-active,
+.duster-active * {
+  cursor: none !important;
+}
+
+.duster-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.duster-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-200px, -200px, 0);
+  transition: opacity 0.25s ease;
+  will-change: transform;
+}
+
+.duster-cursor svg {
+  display: block;
+  transform: translate(-28px, -18px) rotate(-2deg);
+  filter: drop-shadow(0 8px 12px rgba(28, 24, 60, 0.28));
+}
+
+.duster-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.duster-particle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(238, 237, 242, 0.95),
+    rgba(196, 192, 206, 0.6) 44%,
+    rgba(176, 172, 188, 0) 72%
+  );
+  pointer-events: none;
+  will-change: transform, opacity;
+  animation-name: duster-smoke;
+  animation-timing-function: cubic-bezier(0.22, 0.6, 0.3, 1);
+  animation-fill-mode: forwards;
+}
+
+.duster-particle.s0 {
+  filter: url(#dsmoke0);
+}
+.duster-particle.s1 {
+  filter: url(#dsmoke1);
+}
+.duster-particle.s2 {
+  filter: url(#dsmoke2);
+}
+.duster-particle.s3 {
+  filter: url(#dsmoke3);
+}
+
+@keyframes duster-smoke {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--x), var(--y), 0) scale(0.28) rotate(0deg);
+  }
+  16% {
+    opacity: var(--peak, 0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(var(--x) + var(--dx)), calc(var(--y) + var(--dy)), 0)
+      scale(2.2) rotate(var(--rot, 40deg));
+  }
+}
+
+/* No custom cursor on touch devices */
+@media (pointer: coarse) {
+  .duster-cursor,
+  .duster-layer {
+    display: none;
+  }
+}
+
+/* Keep the cursor, drop the dust, for reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  .duster-particle {
+    display: none;
+  }
+}

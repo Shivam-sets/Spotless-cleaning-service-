@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "PowerShell($env:Path = \"C:\\\\Program Files\\\\nodejs;\" + $env:Path; npm run build 2>&1 | Select-String -Pattern \"Compiled|error|Error\" | Out-String)"
+    ]
+  }
+}
