@@ -28,7 +28,6 @@ export function BeforeAfter() {
   const [scene, setScene] = useState(0);
   const [pos, setPos] = useState(55);
   const ref = useRef<HTMLDivElement>(null);
-  const dragging = useRef(false);
 
   const setFromX = useCallback((clientX: number) => {
     const el = ref.current;
@@ -37,20 +36,18 @@ export function BeforeAfter() {
     setPos(Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100)));
   }, []);
 
+  // The reveal follows the cursor on hover (mouse) and the finger on touch.
+  const onPointerMove = (e: React.PointerEvent) => setFromX(e.clientX);
   const onPointerDown = (e: React.PointerEvent) => {
-    dragging.current = true;
-    try {
-      (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
-    } catch {
-      /* ignore, capture isn't essential */
+    // On touch/pen, capture the pointer so the finger keeps controlling it.
+    if (e.pointerType !== "mouse") {
+      try {
+        (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+      } catch {
+        /* ignore, capture isn't essential */
+      }
     }
     setFromX(e.clientX);
-  };
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (dragging.current) setFromX(e.clientX);
-  };
-  const stop = () => {
-    dragging.current = false;
   };
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowLeft") setPos((p) => Math.max(0, p - 4));
@@ -69,7 +66,7 @@ export function BeforeAfter() {
               See the <span className="text-gradient">difference</span> for yourself
             </>
           }
-          intro="Drag the slider to reveal the transformation, the same space, deep-cleaned to a spotless shine."
+          intro="Move your cursor across the image to reveal the transformation, the same space, deep-cleaned to a spotless shine."
         />
 
         <Reveal className="mx-auto mt-12 max-w-4xl">
@@ -96,9 +93,7 @@ export function BeforeAfter() {
             ref={ref}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
-            onPointerUp={stop}
-            onPointerLeave={stop}
-            className="relative aspect-[4/3] w-full touch-none select-none overflow-hidden rounded-[1.75rem] shadow-lift sm:aspect-[16/10]"
+            className="relative aspect-[4/3] w-full cursor-ew-resize touch-none select-none overflow-hidden rounded-[1.75rem] shadow-lift sm:aspect-[16/10]"
           >
             {/* AFTER (clean), base layer */}
             <Image
@@ -159,7 +154,7 @@ export function BeforeAfter() {
           </div>
 
           <p className="mt-4 text-center text-sm text-muted">
-            Drag the handle, or use the arrow keys, to compare.
+            Hover or drag across the image to compare, or use the arrow keys.
           </p>
         </Reveal>
       </div>
